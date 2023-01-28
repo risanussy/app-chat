@@ -7,7 +7,7 @@ const multer = require("multer");
 const cors = require('cors');
 
 const app = express();
-const port = 5000;
+const port = 5000 || process.env.PORT;
 
 // config io
 const http = require('http').Server(app);
