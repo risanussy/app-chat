@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const Auth = (props) => {
     // register State
@@ -12,11 +12,10 @@ const Auth = (props) => {
     const [loginEmail, setLoginEmail] = useState('')
     const [loginPassword, setLoginPassword] = useState('')
 
-    const regis = (e) => {
+    const register = (e) => {
         e.preventDefault()
         axios.post('http://localhost:5000/auth/v1/register', {name, email, password, confPassword})
             .then(res => {
-                console.log(res);
                 alert(res.data.message)
                 setName('')
                 setEmail('')
@@ -28,13 +27,13 @@ const Auth = (props) => {
     let login = (e) => {
         e.preventDefault()
         axios.post('http://localhost:5000/auth/v1/login', {
-                email: loginEmail, password: loginPassword 
-            }, { withCredentials: true })
-          .then(() => {
-                props.status('login')
-                setLoginEmail('')
-                setLoginPassword('')
-            })
+            email: loginEmail, password: loginPassword 
+        }, { withCredentials: true })
+        .then(() => {
+            props.status('login')
+            setLoginEmail('')
+            setLoginPassword('')
+        })
     }
 
     return (
@@ -45,9 +44,9 @@ const Auth = (props) => {
                 <h3>Login</h3>
                 <br />
                 <form onSubmit={login}>
-                    <input type="text" placeholder="Email" value={loginEmail} onInput={e => setLoginEmail(e.target.value)} />
+                    <input type="text" placeholder="Email" value={loginEmail} onInput={e => setLoginEmail(e.target.value)} required/>
                     <hr />
-                    <input type="password" placeholder="Password" value={loginPassword} onInput={e => setLoginPassword(e.target.value)} />
+                    <input type="password" placeholder="Password" value={loginPassword} onInput={e => setLoginPassword(e.target.value)} required/>
                     <br /><br />
                     <button className="login">Login</button>
                 </form>
@@ -56,7 +55,7 @@ const Auth = (props) => {
             <div className="auth">
                 <h3>Daftar</h3>
                 <br />
-                <form onSubmit={regis}>
+                <form onSubmit={register}>
                     <input type="text" placeholder="Username" value={name} onInput={e => setName(e.target.value)} />
                     <hr />
                     <input type="text" placeholder="Email" value={email} onInput={e => setEmail(e.target.value)} />

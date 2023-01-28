@@ -1,60 +1,78 @@
-import axios from 'axios'
 import { useState, useEffect } from 'react';
+import axios from 'axios'
 import jwt_decode from 'jwt-decode';
+import io from 'socket.io-client';
 
-const Profil = (props) => {       
+const Profil = (props) => {  
+    const socket = io('http://localhost:5000',{  
+      cors: {
+      origin: "http://localhost:5000",
+      credentials: true
+    },transports : ['websocket'] });   
+
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-
     const [token, setToken] = useState('');
     const [expire, setExpire] = useState('');
-    const [users, setUsers] = useState([]);
  
     useEffect(() => {
-        refreshToken();
-        getUsers();
-    }, []);
+        socket.on('connect', () => {})
 
-    const refreshToken = async () => {
-      try {
-          const response = await axios.get('http://localhost:5000/auth/v1/token', { withCredentials: true });
-          setToken(response.data.accessToken);
-          const decoded = jwt_decode(response.data.accessToken);  
-          setName(decoded.name);
-          setEmail(decoded.email);
-          setExpire(decoded.exp);
-      } catch (error) {
-          if (error.response) {
-              props.status('anon');
-          }
-      }
+        socket.on('get user', (data) => { 
+          console.log(data[0])
+          props.setUsers(data[0])
+        })
+        socket.emit('get user', email)
+
+        refreshToken()
+
+        return () => {
+          socket.off('connect');
+          socket.off('get user');
+        };
+    }, [email]);
+
+    const refreshToken = () => {
+        axios.get('http://localhost:5000/auth/v1/token', { withCredentials: true })
+        .then(res => {
+            setToken(res.data.accessToken);
+            const decoded = jwt_decode(res.data.accessToken);  
+
+            setName(decoded.name);
+            setEmail(decoded.email);
+            setExpire(decoded.exp);
+        })
+        .catch(err => {
+            console.error(err)
+            if (err.response) {
+                props.status('anon');
+            }
+        })
     }
 
     const axiosJWT = axios.create();
  
-    axiosJWT.interceptors.request.use(async (config) => {
+    axiosJWT.interceptors.request.use((config) => {
         const currentDate = new Date();
+
         if (expire * 1000 < currentDate.getTime()) {
-            const response = await axios.get('http://localhost:5000/auth/v1/token', { withCredentials: true });
-            config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-            setToken(response.data.accessToken);
-            const decoded = jwt_decode(response.data.accessToken);
-            setName(decoded.name);
-            setExpire(decoded.exp);
+            axios.get('http://localhost:5000/auth/v1/token', { withCredentials: true })
+                .then(res => {
+                    config.headers.Authorization = `Bearer ${res.data.accessToken}`;
+                    setToken(res.data.accessToken);
+
+                    const decoded = jwt_decode(res.data.accessToken);
+                    
+                    setName(decoded.name);
+                    setExpire(decoded.exp);
+                })
         }
+
         return config;
+
     }, (error) => {
         return Promise.reject(error);
     });
-
-    const getUsers = async () => {
-      const response = await axiosJWT.get('http://localhost:5000/auth/v1/users', {
-          headers: {
-              Authorization: `Bearer ${token}`
-          }
-      }, { withCredentials: true });
-      setUsers(response.data);
-    }
     
     const Logout = () => {
         axios.delete('http://localhost:5000/auth/v1/logout', {withCredentials:true})

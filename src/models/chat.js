@@ -4,9 +4,10 @@ const Schema = mongoose.Schema;
 const chatPost = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'user'
+    ref: 'user',
+    required: true
   },
-  chat: {
+  message: {
     type: String,
     required: true
   }

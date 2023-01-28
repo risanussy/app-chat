@@ -4,7 +4,7 @@ import Profil from "./micro/Profil"
 let Sidebar = (props) => {
     if(props.status === 'login'){
         return (
-            <Profil status={props.setStatus} />
+            <Profil status={props.setStatus} setUsers={props.setUsers} />
         )
     }else {
         return (

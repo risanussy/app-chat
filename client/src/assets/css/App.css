@@ -43,7 +43,7 @@ input:focus {
 }
 
 ::placeholder {
-  color: white;
+  color: (78, 78, 78);
 }
 
 .login {
@@ -182,3 +182,27 @@ li {
   height: 40px;
 }
 
+.bubble {
+  display: inline-block;
+  position: relative;
+  padding: 23px 180px 10px 20px;
+  margin: 12px 0;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: white;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 25px;
+}
+
+.user-chat {
+  position: absolute;
+  font-size: 10px;
+  color: #4ECCA3;
+  top: 9px;
+  left: 20px;
+}
+
+.scroll-chat {
+  padding: 20px;
+  overflow-y: scroll;
+}

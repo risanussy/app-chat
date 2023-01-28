@@ -1,28 +1,22 @@
 const chatPost = require('../models/chat');
+const userPost = require('../models/user');
 
-exports.sendChat = (socket) => {
-    console.log("connect 1");
+exports.getChat = (socket) => {
+    socket.on('get data', () => {
+      chatPost.find().populate('user').exec((err, data) => {
+        if (err) throw err;
 
-    socket.on('data', (data) => {
-        const nama = data.nama;
-        const chat = data.message;
-        
-        const Posting = new chatPost({nama, chat})
-        
-        Posting.save()
-            .catch(err => console.log('Pesan error : ' + err))
-        io.emit('data', data);
+        socket.emit('get data', data);
+      });
     });
 }
 
-exports.getChat = (socket) => {
-    console.log("connect 2");
-
-    socket.on('get data', () => {
-      chatPost.find({}, (err, data) => {
+exports.getUser = (socket) => {
+    socket.on('get user', (email) => {
+      userPost.find({email}, 'name email', (err, data) => {
         if (err) throw err;
-  
-        socket.emit('data', data);
+
+        socket.emit('get user', data);
       });
     });
 }
