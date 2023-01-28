@@ -1,22 +1,22 @@
+import { BrowserRouter as Router } from 'react-router-dom';
+import { useState } from 'react';
 import '../assets/css/App.css';
 
+// component
+import { Sidebar, Chat } from '../components'
+
 function App() {
+  const [status, setStatus] = useState('anon');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <Router>
+      <div className="app">
+        <Sidebar status={status} setStatus={setStatus} />
+        <Chat status={status} />
+      </div>
+    </Router>
+    </>
   );
 }
 
