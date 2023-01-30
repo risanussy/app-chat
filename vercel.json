@@ -7,5 +7,27 @@
     ],
     "cleanUrls": true,
     "trailingSlash": false,
-    "public": false
+    "public": false,
+    "redirects": [
+      {
+        "source": "/src/(.*)",
+        "destination": "/auth/v1",
+        "permanent": true
+      },
+      {
+        "source": "/src",
+        "destination": "/auth/v1",
+        "permanent": true
+      },
+      {
+        "source": "/",
+        "destination": "/auth/v1",
+        "permanent": true
+      },
+      {
+        "source": "/index.js",
+        "destination": "/auth/v1",
+        "permanent": true
+      }
+    ]
   }
