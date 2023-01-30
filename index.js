@@ -51,6 +51,13 @@ io.on('connection', (socket) => {
         io.emit('new data', data);
     });
 });
+
+io.on('connection', socket => {
+  socket.on('user-typing', () => {
+    socket.broadcast.emit('is-typing');
+  });
+});
+
 io.on('connection', getChat);
 io.on('connection', getUser);
 

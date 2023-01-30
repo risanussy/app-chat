@@ -25,6 +25,12 @@ const Chat = (props) => {
       setChat(past => [...past, data])
     });
 
+    // document.querySelector('.scroll-chat').scrollTo(0, document.querySelector('.scroll-chat').scrollHeight);
+
+    socket.on('is-typing', () => {
+      console.log('Someone is typing...');
+    });    
+
     return () => {
       socket.off('connect');
       socket.off('get data');
@@ -43,24 +49,30 @@ const Chat = (props) => {
  
   }
 
+  const Typing = ()=> {    
+  console.log('Someone is typing...');
+  }
+
   if(props.status === 'login'){
       return (        
         <div className="main">
-        <div className='scroll-chat'>
+        {/* <div className='scroll-chat'> */}
+        <div>        
           {chat.map((chat, i) => <div key={i}><div className='bubble'><span className='user-chat'>{chat.user.name}</span> {chat.message}</div><br/></div>)}
         </div>
 
           <br /><br /><br />
           <form onSubmit={sendMessage} className={'form-chat'}>
-            <input type="text" className="chat" placeholder="Ketikan Pesan" value={text} onInput={e => setText(e.target.value)} />
+            <input type="text" className="chat" placeholder="Ketikan Pesan" value={text} onKeyDown={Typing} onInput={e => setText(e.target.value)} />
             <button disabled={sts} className="chat-btn">Kirim</button>
-          </form>
+          </form> 
         </div>
     )
   }else {
     return (        
       <div className="main">
-        <div className='scroll-chat'>
+      {/* <div className='scroll-chat'> */}
+      <div>        
           {chat.map((chat, i) => <div key={i}><div className='bubble'><span className='user-chat'>{chat.user.name}</span> {chat.message}</div><br/></div>)}
         </div>
       </div>
